@@ -23,11 +23,7 @@ $(function () {
     })
 
 
-    // 统一配置 Ajax 选项
-    $.ajaxPrefilter(function (options) {
-        // 更改url
-        options.url = 'http://ajax.frontend.itheima.net' + options.url
-    })
+
     // 3. 提交注册表单,发起Ajax请求
     $('#form-reg').on('submit', function (e) {
         // 阻止表单提交默认事件
@@ -38,14 +34,40 @@ $(function () {
             url: '/api/reguser',
             data: {
                 username: $('#form-reg input[name=username]').val(),
-                password : $('#form-reg input[name=password]').val()
+                password: $('#form-reg input[name=password]').val()
             },
             success: function (res) {
                 console.log(res);
                 if (res.status !== 0) {
                     return layer.msg(res.message)
                 }
-                layer.msg(res.message)
+                layer.msg('注册成功,请登录!')
+                // 跳转到登录表单
+                $('#link-login').trigger('click')
+                // 清空表单
+                $('#form-reg')[0].reset()
+            }
+        })
+    })
+
+    // 提交登录表单
+    $('#form-login').on('submit', function (e) {
+        // 阻止默认事件
+        e.preventDefault();
+        // 发起Ajax请求
+        var data = $(this).serialize()
+        $.ajax({
+            method: 'POST',
+            url: '/api/login',
+            data,
+            success: function (res) {
+                console.log(res);
+                if (res.status !== 0) {
+                    return layer.msg(res.message)
+                }
+                layer.msg('登录成功!')
+                localStorage.setItem('token', res.token)
+                location.href = '/index.html'
             }
         })
     })
