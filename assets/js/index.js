@@ -1,5 +1,19 @@
 $(function () {
     getUserInfo()
+
+    // 点击退出按钮,跳转到登录页面
+    var layer = layui.layer
+    $('#btnLogout').on('click', function () {
+        // 弹出询问框
+        layer.confirm('是否确认退出', { icon: 3, title: '提示' }, function (index) {
+            //删除token
+            localStorage.removeItem('token')
+            // 跳转到登录页面
+            location.href = '/login.html'
+            // 关闭询问框
+            layer.close(index);
+        });
+    })
 })
 
 // 封装获取用户信息函数
@@ -8,7 +22,7 @@ function getUserInfo() {
         method: 'GET',
         url: '/my/userinfo',
         success: function (res) {
-            console.log(res);
+            // console.log(res);
             if (res.status !== 0) {
                 return layer.msg(res.message)
             }
